@@ -1,25 +1,26 @@
+using System.Text.Json;
+
 namespace StatisticsAPI.Infrastructure;
 
 public class ApiConfig
 {
-    public string BaseUrl { get; set; }
-    public string Token { get; set; }
+    public string BaseUrl { get; set; } = string.Empty;
+    public string Token { get; set; } = string.Empty;
 
-    public ApiConfig(string baseUrl, string token)
+    public static ApiConfig FromJsonFile(string filePath)
     {
-        BaseUrl = baseUrl;
-        Token = token;
+        string json = File.ReadAllText(filePath);
+        JsonSerializerOptions options = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
+
+        ApiConfig? config = JsonSerializer.Deserialize<ApiConfigWrapper>(json, options)?.ClashRoyaleApi;
+        return config ?? new ApiConfig();
     }
 
-    public static ApiConfig FromEnvironment()
+    private sealed class ApiConfigWrapper
     {
-        string token = Environment.GetEnvironmentVariable("CLASH_ROYALE_API_TOKEN");
-
-        if (token == null || token.Trim().Length == 0)
-        {
-            throw new Exception("Missing token. Set the CLASH_ROYALE_API_TOKEN environment variable.");
-        }
-
-        return new ApiConfig("https://api.clashroyale.com/v1", token.Trim());
+        public ApiConfig? ClashRoyaleApi { get; set; }
     }
 }
