@@ -62,7 +62,7 @@ public class ConsoleApp
 
     private string ReadMode()
     {
-        console.Write("Enter mode: basic or detailed: ");
+        console.Write("Enter mode (1=basic, 2=detailed or basic/detailed): ");
         string mode = console.ReadLine();
 
         if (mode == null)
@@ -72,7 +72,7 @@ public class ConsoleApp
 
         mode = mode.Trim().ToLower();
 
-        if (mode == "detailed")
+        if (mode == "2" || mode == "detailed")
         {
             return "detailed";
         }
