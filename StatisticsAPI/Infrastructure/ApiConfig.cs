@@ -9,6 +9,11 @@ public class ApiConfig
 
     public static ApiConfig FromJsonFile(string filePath)
     {
+        if (!File.Exists(filePath))
+        {
+            throw new FileNotFoundException($"Nie znaleziono pliku konfiguracyjnego: {filePath}");
+        }
+
         string json = File.ReadAllText(filePath);
         JsonSerializerOptions options = new JsonSerializerOptions
         {
@@ -16,7 +21,13 @@ public class ApiConfig
         };
 
         ApiConfig? config = JsonSerializer.Deserialize<ApiConfigWrapper>(json, options)?.ClashRoyaleApi;
-        return config ?? new ApiConfig();
+
+        if (string.IsNullOrEmpty(config?.Token))
+        {
+            throw new Exception("API token is missing in the configuration file.");
+        }
+
+        return config;
     }
 
     private sealed class ApiConfigWrapper

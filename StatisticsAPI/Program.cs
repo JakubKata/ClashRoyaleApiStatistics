@@ -12,11 +12,6 @@ public class Program
             string configPath = Path.Combine(AppContext.BaseDirectory, "appsettings.json");
             ApiConfig config = ApiConfig.FromJsonFile(configPath);
 
-            if (string.IsNullOrEmpty(config?.Token))
-            {
-                throw new Exception("Brak tokenu w pliku appsettings.json.");
-            }
-
             HttpClient httpClient = new HttpClient();
 
             IClashRoyaleApiClient apiClient = new ClashRoyaleApiClient(config, httpClient);
