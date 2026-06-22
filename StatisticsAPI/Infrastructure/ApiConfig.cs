@@ -11,7 +11,7 @@ public class ApiConfig
     {
         if (!File.Exists(filePath))
         {
-            throw new FileNotFoundException($"Nie znaleziono pliku konfiguracyjnego: {filePath}");
+            throw new FileNotFoundException($"Json file not found: {filePath}");
         }
 
         string json = File.ReadAllText(filePath);
