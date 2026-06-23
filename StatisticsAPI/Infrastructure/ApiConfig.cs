@@ -15,6 +15,7 @@ public class ApiConfig
         }
 
         string json = File.ReadAllText(filePath);
+
         JsonSerializerOptions options = new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true

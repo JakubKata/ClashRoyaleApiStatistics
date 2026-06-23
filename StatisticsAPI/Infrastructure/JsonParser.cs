@@ -5,13 +5,10 @@ namespace StatisticsAPI.Infrastructure;
 
 public class JsonParser
 {
-    private JsonSerializerOptions options;
-
-    public JsonParser()
+    private readonly JsonSerializerOptions options = new JsonSerializerOptions
     {
-        options = new JsonSerializerOptions();
-        options.PropertyNameCaseInsensitive = true;
-    }
+        PropertyNameCaseInsensitive = true
+    };
 
     public PlayerProfileDto ParseProfile(string json)
     {
