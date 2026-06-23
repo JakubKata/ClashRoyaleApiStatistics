@@ -22,34 +22,46 @@ public class ConsoleApp
 
     public async Task RunAsync(CancellationToken cancellationToken)
     {
-        try
+        console.WriteLine("=== Clash Royale Player Stats ===");
+
+        while (true)
         {
-            console.WriteLine("=== Clash Royale Player Stats ===");
+            try
+            {
+                string mode = ReadMode();
 
-            PlayerTag playerTag = ReadPlayerTag();
-            string mode = ReadMode();
+                if (mode == "exit")
+                {
+                    console.WriteLine("Exiting the application.");
+                    break;
+                }
 
-            console.WriteLine("");
-            console.WriteLine("Fetching data from the API...");
+                PlayerTag playerTag = ReadPlayerTag();
 
-            PlayerProfileDto profile = await repository.GetProfileAsync(playerTag, cancellationToken);
-            List<BattleLogItemDto> battleLog = await repository.GetBattleLogAsync(playerTag, cancellationToken);
-            ChestListDto chests = await repository.GetUpcomingChestsAsync(playerTag, cancellationToken);
+                console.WriteLine("");
+                console.WriteLine("Fetching data from the API...");
 
-            PlayerStatistics stats = calculator.Calculate(profile, battleLog, chests);
-            IStatsRenderer renderer = rendererFactory.CreateRenderer(mode);
+                PlayerProfileDto profile = await repository.GetProfileAsync(playerTag, cancellationToken);
+                List<BattleLogItemDto> battleLog = await repository.GetBattleLogAsync(playerTag, cancellationToken);
+                ChestListDto chests = await repository.GetUpcomingChestsAsync(playerTag, cancellationToken);
 
-            console.WriteLine("");
-            console.WriteLine(renderer.Render(stats));
-        }
-        catch (ApiException ex)
-        {
-            console.WriteLine("API error. Code: " + ex.StatusCode);
-            console.WriteLine(ex.Message);
-        }
-        catch (Exception ex)
-        {
-            console.WriteLine("Error: " + ex.Message);
+                PlayerStatistics stats = calculator.Calculate(profile, battleLog, chests);
+                IStatsRenderer renderer = rendererFactory.CreateRenderer(mode);
+
+                console.WriteLine("");
+                console.WriteLine(renderer.Render(stats));
+            }
+            catch (ApiException ex)
+            {
+                console.WriteLine("API error. Code: " + ex.StatusCode);
+                console.WriteLine(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                console.WriteLine("Error: " + ex.Message);
+            }
+
+            console.WriteLine("\n--------------------------------------------------\n");
         }
     }
 
@@ -62,7 +74,7 @@ public class ConsoleApp
 
     private string ReadMode()
     {
-        console.Write("Enter mode (1=basic, 2=detailed or basic/detailed): ");
+        console.Write("Enter mode (1=basic, 2=detailed, 3=exit or basic/detailed/exit): ");
         string mode = console.ReadLine();
 
         if (mode == null)
@@ -71,6 +83,11 @@ public class ConsoleApp
         }
 
         mode = mode.Trim().ToLower();
+
+        if (mode == "3" || mode == "exit" || mode == "ex")
+        {
+            return "exit";
+        }
 
         if (mode == "2" || mode == "detailed")
         {
