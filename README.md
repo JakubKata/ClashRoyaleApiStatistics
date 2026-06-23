@@ -4,6 +4,7 @@ StatisticsAPI is a small .NET console application that fetches and computes play
 
 Supported scenarios:
 
+- Interactive console menu for choosing basic, detailed, or exit mode
 - Fetch player data from the external Clash Royale API
 - Compute and format basic and detailed statistics
 - Render results in basic and detailed modes
@@ -19,6 +20,22 @@ Supported scenarios:
 - Statistics calculation module (`StatsCalculator`)
 - Multiple statistics renderers and a renderer factory (`Application/Rendering`)
 - Console adapter and `IConsole` abstraction to isolate UI logic
+- Interactive menu in `ConsoleApp` for selecting the output mode before entering a player tag
+
+---
+
+## Console Menu
+
+After startup, the application shows a simple prompt loop:
+
+1. Choose a mode:
+  - `1` or `basic` for basic statistics
+  - `2` or `detailed` for detailed statistics
+  - `3`, `exit`, or `ex` to close the app
+2. Enter the player tag, for example `#ABC123`
+3. The app fetches the profile, battle log, and upcoming chests, then prints the selected report
+
+If you press Enter without typing a mode, the app falls back to basic statistics.
 
 ---
 
@@ -64,11 +81,14 @@ dotnet build
 dotnet run --project StatisticsAPI/StatisticsAPI.csproj
 ```
 
+4. Follow the console menu to choose `basic`, `detailed`, or `exit`, then provide the player tag.
+
 ---
 
 ## Running and debugging
 
-- The application is a console app; `Program.cs` configures DI and starts `ConsoleApp`.
+- The application is a console app; `Program.cs` configures dependencies and starts `ConsoleApp`.
+- `ConsoleApp` owns the interactive menu, reads the selected mode, and then requests the player tag.
 - Make sure the `Token` in `appsettings.json` is set to a valid API token.
 
 ---
